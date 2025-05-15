@@ -25,7 +25,7 @@ async function run() {
 
   // Write your prompt here
   const prompt =
-    "Generate a concise and engaging tweet in English that shares a practical tip or insightful trick related to crypto or Web3. Ensure the content is helpful for both beginners and experienced users. Occasionally, create tweets that highlight or mention @MagicNewton, @KaitoAI, or @GiveRep specifically. Keep the tone friendly, informative, and community-focused. Avoid financial advice. Always tag @GiveRep @KaitoAI @MagicNewton at the end of each tweet.";
+    "Generate a short, original, and highly practical tip or trick (max 280 characters) about Web3 or crypto. that shares a practical tip or insightful trick related to crypto or Web3. Ensure the content is helpful for both beginners and experienced users. Occasionally, create tweets that highlight or mention @MagicNewton, @KaitoAI, or @GiveRep specifically. Keep the tone friendly, informative, and community-focused. Avoid financial advice. Always tag @GiveRep @KaitoAI @MagicNewton at the end of each tweet.";
 
   const result = await model.generateContent(prompt);
   const response = await result.response;
