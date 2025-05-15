@@ -25,7 +25,7 @@ async function run() {
 
   // Write your prompt here
   const prompt =
-    "Generate a short, original, and practical tip or trick (max 280 characters) related to Web3 or crypto. The tone should be helpful, like giving advice to beginners or intermediate users. Avoid generic statements. You may use emojis. Always mention @GiveRep @KaitoAI in the tweet. Do not use hashtags or links.";
+    "Generate a short, original, and highly practical tip or trick (max 280 characters) about Web3 or crypto. The tip must be actionable, insightful, and immediately useful for beginners or intermediate users-strictly avoid generic, vague, or repetitive advice. Write in a friendly, encouraging, and conversational tone that feels personal and approachable. The tip should introduce a fresh perspective, smart shortcut, or little-known strategy that users can apply right away. Use at least one relevant emoji to boost clarity or emphasis, but keep the language simple, concise, and free of technical jargon. Always mention @GiveRep @KaitoAI in the tweet. Do not use hashtags, links, promotional phrases, or any form of self-promotion.";
 
   const result = await model.generateContent(prompt);
   const response = await result.response;
