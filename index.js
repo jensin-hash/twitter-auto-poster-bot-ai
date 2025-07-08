@@ -25,7 +25,7 @@ async function run() {
 
   // Write your prompt here
   const prompt =
-    "Generate a short, original, and practical tip or trick (max 280 characters) related to Web3 or crypto. The tone should be helpful, like giving advice to beginners or intermediate users. Avoid generic statements. You may use emojis. Always mention @GiveRep @KaitoAI @MagicNewton in the tweet.";
+    "Generate a short, original, and practical tip or trick (max 280 characters) related to Web3 or crypto. The tone should be helpful, like giving advice to beginners or intermediate users. Avoid generic statements. You may use emojis. Always mention @GiveRep @KaitoAI";
 
   const result = await model.generateContent(prompt);
   const response = await result.response;
