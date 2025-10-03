@@ -25,10 +25,8 @@ async function run() {
 
   // Write your prompt here
   const prompt =
-    "Generate a short, original, and practical tip or trick (max 280 characters) related to Web3 or crypto. The tone should be helpful, like giving advice to beginners or intermediate users. Avoid generic statements. You may use emojis. Always mention @GiveRep @KaitoAI";
+  "Generate a short, original, and hype tweet (max 280 chars) about the @River4FUN project. Always include @River4FUN, $RiverPts, and #CryptoInnovation. Mix styles: (1) mass-market hype & community, (2) tech-savvy crypto (DeFi, DAO, utility). Vary focus, avoid generic crypto talk.";
 
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
   const text = response.text();
   console.log(text);
   sendTweet(text);
