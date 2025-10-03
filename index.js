@@ -12,40 +12,45 @@ const twitterClient = new TwitterApi({
 });
 
 const generationConfig = {
-  maxOutputTokens: 200, // 400 boleh, tapi 200 cukup untuk tweet
+  maxOutputTokens: 120,
+  temperature: 0.8,
+  topP: 0.9,
+  topK: 40,
+  stopSequences: ["Option", "Options", "1)", "1.", "Tweet:", "Output:"],
 };
 
 const genAI = new GoogleGenerativeAI(SECRETS.GEMINI_API_KEY);
 
-// ===== Utils =====
+// ===== Cleaners =====
+function hardClean(text) {
+  let t = String(text);
+  t = t.replace(/```[\s\S]*?```/g, "")
+       .replace(/^["'`“”]+|["'`“”]+$/g, "")
+       .replace(/^\s*(Option(s)?\s*\d*\s*[:\-)]\s*)/gi, "")
+       .replace(/\bOption(s)?\b\s*\d*\s*[:\-)]?/gi, "")
+       .replace(/^(Tweet|Output)\s*[:\-]\s*/gi, "");
+  t = t.split(/\n|(?<=\!)\s|(?<=\?)\s|(?<=\.)\s/)[0];
+  t = t.replace(/\s+/g, " ").trim();
+  return t;
+}
+
 function sanitize(text) {
-  // rapikan output: hilangkan backticks/quote dan baris ganda
-  return String(text)
-    .replace(/^[`'"“”]+|[`'"“”]+$/g, "")
-    .replace(/\s*\n+\s*/g, " ")
-    .trim();
+  return hardClean(text).replace(/\s*\n+\s*/g, " ").trim();
 }
 
 function ensureCompliance(text) {
-  // pastikan wajib ada @River4FUN, #CryptoInnovation, $RiverPts
   let t = sanitize(text);
-
   const required = ["@River4FUN", "#CryptoInnovation", "$RiverPts"];
   for (const token of required) {
     if (!t.includes(token)) {
-      // jika muat, tambahkan di akhir; kalau nggak, sisipkan/replace terakhir
-      if (t.length + 1 + token.length <= 280) {
-        t = `${t} ${token}`;
-      } else {
-        // potong sedikit agar muat token
-        const spaceForToken = 1 + token.length;
-        t = t.slice(0, Math.max(0, 280 - spaceForToken)).trimEnd();
+      const room = 1 + token.length;
+      if (t.length + room <= 280) t = `${t} ${token}`;
+      else {
+        t = t.slice(0, Math.max(0, 280 - room)).trimEnd();
         t = `${t} ${token}`;
       }
     }
   }
-
-  // jaga-jaga: pastikan maksimum 280
   if (t.length > 280) t = t.slice(0, 280).trimEnd();
   return t;
 }
@@ -59,9 +64,8 @@ async function run() {
     });
 
     const prompt =
-      "Generate a short, original, and hype tweet (max 280 chars) about the @River4FUN project. Always include @River4FUN, $RiverPts, and #CryptoInnovation. Mix styles: (1) mass-market hype & community, (2) tech-savvy crypto (DeFi, DAO, utility). Vary focus, avoid generic crypto talk.";
+      "Write EXACTLY ONE tweet about the @River4FUN project. Hard requirements: include @River4FUN, $RiverPts, and #CryptoInnovation; max 280 chars. No headings, no lists, no 'Option', no colons after labels, no quotes, no code blocks. Start directly with the tweet text. Mix mass-market hype & tech-savvy (DeFi/DAO/utility). Avoid generic crypto clichés. Vary focus (community, utility, rewards, vision).";
 
-    // ✅ Panggil model.generateContent untuk mendapat response
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const rawText = response.text();
